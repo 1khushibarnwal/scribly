@@ -1,4 +1,4 @@
-import Note from "../models/Note.js";
+import Note from "../models/Note.model.js";
 
 export async function getAllNotes(_, res) {
   try {
@@ -42,7 +42,7 @@ export async function updateNote(req, res) {
     const updatedNote = await Note.findByIdAndUpdate(
       req.params.id,
       { title, content },
-      { new: true }
+      { new: true },
     );
 
     if (!updatedNote)

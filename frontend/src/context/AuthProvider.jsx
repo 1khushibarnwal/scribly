@@ -6,12 +6,31 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [checkingSession, setCheckingSession] = useState(true); // new
 
   const tokenRef = useRef(null);
   tokenRef.current = accessToken;
 
   useEffect(() => {
     setupInterceptor(() => tokenRef.current);
+  }, []);
+
+  // On first load, try to restore session using the httpOnly refresh cookie
+  useEffect(() => {
+    const restoreSession = async () => {
+      try {
+        const res = await axiosInstance.get("/auth/refresh");
+        setUser(res.data.user);
+        setAccessToken(res.data.accessToken);
+      } catch (err) {
+        // no valid session — that's fine, user just stays logged out
+        setUser(null);
+        setAccessToken(null);
+      } finally {
+        setCheckingSession(false);
+      }
+    };
+    restoreSession();
   }, []);
 
   const signup = async ({ name, email, password }) => {
@@ -65,7 +84,15 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, accessToken, loading, signup, login, logout }}
+      value={{
+        user,
+        accessToken,
+        loading,
+        checkingSession,
+        signup,
+        login,
+        logout,
+      }}
     >
       {children}
     </AuthContext.Provider>

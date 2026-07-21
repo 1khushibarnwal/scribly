@@ -108,3 +108,38 @@ export const logout = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+// @route  GET /api/auth/refresh
+export const refresh = async (req, res) => {
+  try {
+    const token = req.cookies?.refreshToken;
+    if (!token) {
+      return res.status(401).json({ message: "No refresh token" });
+    }
+
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+    } catch (err) {
+      return res
+        .status(401)
+        .json({ message: "Refresh token invalid or expired" });
+    }
+
+    const user = await User.findById(decoded.userId).select("+refreshToken");
+    if (!user || user.refreshToken !== token) {
+      // token doesn't match what's stored (already logged out / rotated / stolen token reused)
+      return res.status(401).json({ message: "Session no longer valid" });
+    }
+
+    const accessToken = generateAccessToken(user._id);
+
+    res.status(200).json({
+      accessToken,
+      user: { id: user._id, name: user.name, email: user.email },
+    });
+  } catch (error) {
+    console.error("Refresh error:", error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};

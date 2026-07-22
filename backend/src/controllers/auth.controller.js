@@ -1,4 +1,6 @@
 import User from "../models/User.model.js";
+import Note from "../models/Note.model.js";
+
 import {
   generateAccessToken,
   generateRefreshToken,
@@ -138,6 +140,24 @@ export const refresh = async (req, res) => {
     });
   } catch (error) {
     console.error("Refresh error:", error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const deleteAccount = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    // Delete all of this user's notes first, then the account itself
+    await Note.deleteMany({ user: userId });
+    await User.findByIdAndDelete(userId);
+
+    res.clearCookie("refreshToken", clearCookieOptions);
+    res
+      .status(200)
+      .json({ message: "Account and all associated data deleted" });
+  } catch (error) {
+    console.error("Delete account error:", error.message);
     res.status(500).json({ message: "Internal server error" });
   }
 };

@@ -6,6 +6,7 @@ import NoteDetailPage from "./pages/NoteDetailPage";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AccountSettings from "./pages/AccountSettings";
 
 function App() {
   return (
@@ -37,6 +38,14 @@ function App() {
       />
       <Route path="/signup" element={<Signup />} />
       <Route path="/login" element={<Login />} />
+      <Route
+        path="/settings"
+        element={
+          <ProtectedRoute>
+            <AccountSettings />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }

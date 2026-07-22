@@ -8,6 +8,7 @@ import notesRoutes from "./routes/notesRoutes.js";
 import { connectDB } from "../src/config/db.js";
 import rateLimiter from "./middleware/rateLimiter.js";
 import authRoutes from "./routes/auth.route.js";
+import publicRoutes from "./routes/public.route.js";
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ app.use(
 app.use(cookieParser()); // was missing — logout/refresh cookies depend on this
 app.use(express.json());
 app.use(rateLimiter);
+app.use("/api/public", publicRoutes);
 
 app.use("/api/notes", notesRoutes);
 app.use("/api/auth", authRoutes);

@@ -1,5 +1,6 @@
 import Note from "../models/Note.model.js";
 import groq from "../config/groq.js";
+import crypto from "crypto";
 
 export async function getAllNotes(req, res) {
   try {
@@ -134,5 +135,53 @@ export async function summarizeNote(req, res) {
   } catch (error) {
     console.error("error in summarizeNote controller", error);
     res.status(500).json({ message: "Failed to summarize note" });
+  }
+}
+
+export async function toggleShare(req, res) {
+  try {
+    const note = await Note.findOne({ _id: req.params.id, user: req.user._id });
+
+    if (!note) return res.status(404).json({ message: "Note not found" });
+
+    if (note.shareToken) {
+      note.shareToken = null; // disable sharing
+    } else {
+      note.shareToken = crypto.randomBytes(16).toString("hex");
+    }
+
+    await note.save();
+    res.status(200).json(note);
+  } catch (error) {
+    console.error("error in toggleShare controller", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+export async function getPublicNote(req, res) {
+  try {
+    const note = await Note.findOne({ shareToken: req.params.token }).populate(
+      "user",
+      "name",
+    );
+
+    if (!note) {
+      return res
+        .status(404)
+        .json({
+          message: "This shared note doesn't exist or is no longer shared",
+        });
+    }
+
+    res.status(200).json({
+      title: note.title,
+      content: note.content,
+      tags: note.tags,
+      authorName: note.user.name,
+      createdAt: note.createdAt,
+    });
+  } catch (error) {
+    console.error("error in getPublicNote controller", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 }

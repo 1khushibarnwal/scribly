@@ -23,6 +23,12 @@ const noteSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    shareToken: {
+      type: String,
+      default: null,
+      unique: true,
+      sparse: true, // allows many notes to have shareToken: null without violating uniqueness
+    },
   },
   { timestamps: true },
 );

@@ -179,7 +179,7 @@ const NoteDetailPage = () => {
   return (
     <div className="min-h-screen bg-base-200">
       <NavBar />
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-3 sm:px-4 py-8">
         <div className="max-w-3xl mx-auto">
           <div className="flex items-center justify-between mb-6 flex-wrap gap-2">
             <Link to="/dashboard" className="btn btn-ghost">

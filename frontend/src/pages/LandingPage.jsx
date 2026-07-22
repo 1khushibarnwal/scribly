@@ -26,10 +26,13 @@ const LandingPage = () => {
         </p>
 
         <div className="flex items-center justify-center gap-4 mb-4">
-          <Link to="/signup" className="btn btn-primary btn-lg">
+          <Link to="/signup" className="btn btn-primary btn-md sm:btn-lg">
             Get Started
           </Link>
-          <Link to="/login" className="btn btn-outline btn-primary btn-lg">
+          <Link
+            to="/login"
+            className="btn btn-outline btn-primary btn-md sm:btn-lg"
+          >
             Log In
           </Link>
         </div>
@@ -121,7 +124,7 @@ const LandingPage = () => {
       {/* Final CTA */}
       <div className="max-w-4xl mx-auto px-4 pb-24 text-center">
         <h2 className="text-2xl font-bold mb-4">Ready to start writing?</h2>
-        <Link to="/signup" className="btn btn-primary btn-lg">
+        <Link to="/signup" className="btn btn-primary btn-md sm:btn-lg">
           Create your free account
         </Link>
       </div>

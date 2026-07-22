@@ -1,5 +1,4 @@
 import { LogOut, PlusIcon } from "lucide-react";
-import React from "react";
 import { Link, useNavigate } from "react-router";
 import { useAuth } from "../context/useAuth";
 
@@ -9,16 +8,18 @@ const NavBar = () => {
 
   const handleLogout = async () => {
     await logout();
-    navigate("/login");
+    navigate("/");
   };
 
   return (
     <header className="bg-base-300 border-b border-base-content/10">
       <div className="mx-auto max-w-6xl p-4">
         <div className="flex items-center justify-between">
-          <h1 className="test-7xl font-bold text-primary font-mono tracking-tight">
-            Scribly
-          </h1>
+          <Link to={user ? "/dashboard" : "/"}>
+            <h1 className="test-7xl font-bold text-primary font-mono tracking-tight">
+              Scribly
+            </h1>
+          </Link>
           <div className="flex items-center gap-4">
             {user ? (
               <>

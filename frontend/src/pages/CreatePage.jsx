@@ -48,7 +48,7 @@ const CreatePage = () => {
       <NavBar />
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
-          <Link to={"/"} className="btn btn-ghost mb-6">
+          <Link to={"/dashboard"} className="btn btn-ghost mb-6">
             <ArrowLeftIcon className="size-5" />
             Back to Notes Page
           </Link>

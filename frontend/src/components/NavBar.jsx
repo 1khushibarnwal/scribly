@@ -15,7 +15,7 @@ const NavBar = () => {
     <header className="bg-base-300 border-b border-base-content/10">
       <div className="mx-auto max-w-6xl p-4">
         <div className="flex items-center justify-between">
-          <Link to={user ? "/dashboard" : "/"}>
+          <Link to={"/"}>
             <h1 className="test-7xl font-bold text-primary font-mono tracking-tight">
               Scribly
             </h1>
@@ -27,9 +27,12 @@ const NavBar = () => {
                   <PlusIcon className="size-5" />
                   <span>New Note</span>
                 </Link>
-                <span className="text-sm opacity-70 hidden sm:inline">
+                <Link
+                  to="/dashboard"
+                  className="text-sm opacity-70 hidden sm:inline hover:opacity-100 hover:underline"
+                >
                   {user.name}
-                </span>
+                </Link>
                 <button onClick={handleLogout} className="btn btn-ghost">
                   <LogOut className="size-5" />
                   <span>Logout</span>

@@ -1,5 +1,7 @@
 import Note from "../models/Note.model.js";
 
+import groq from "../config/groq.js";
+
 export async function getAllNotes(req, res) {
   try {
     const notes = await Note.find({ user: req.user._id }).sort({
@@ -71,5 +73,37 @@ export async function deleteNote(req, res) {
   } catch (error) {
     console.error("error in deleteNote controller", error);
     res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+export async function summarizeNote(req, res) {
+  try {
+    const note = await Note.findOne({ _id: req.params.id, user: req.user._id });
+
+    if (!note) return res.status(404).json({ message: "Note not found" });
+
+    const completion = await groq.chat.completions.create({
+      model: "llama-3.1-8b-instant",
+      messages: [
+        {
+          role: "system",
+          content:
+            "You summarize personal notes concisely in 2-3 sentences. Keep the original meaning and tone. Do not add information that isn't in the note.",
+        },
+        {
+          role: "user",
+          content: `Title: ${note.title}\n\nContent: ${note.content}`,
+        },
+      ],
+      temperature: 0.3,
+      max_tokens: 150,
+    });
+
+    const summary = completion.choices[0]?.message?.content?.trim();
+
+    res.status(200).json({ summary });
+  } catch (error) {
+    console.error("error in summarizeNote controller", error);
+    res.status(500).json({ message: "Failed to summarize note" });
   }
 }

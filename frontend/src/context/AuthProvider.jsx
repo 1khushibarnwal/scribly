@@ -97,6 +97,58 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const forgotPassword = async (email) => {
+    try {
+      await axiosInstance.post("/auth/forgot-password", { email });
+      return { success: true };
+    } catch (err) {
+      return {
+        success: false,
+        message: err.response?.data?.message || "Something went wrong",
+      };
+    }
+  };
+
+  const resetPassword = async ({ token, password }) => {
+    try {
+      await axiosInstance.post("/auth/reset-password", { token, password });
+      return { success: true };
+    } catch (err) {
+      return {
+        success: false,
+        message: err.response?.data?.message || "Reset failed",
+      };
+    }
+  };
+
+  const updateProfile = async ({ name }) => {
+    try {
+      const res = await axiosInstance.patch("/auth/profile", { name });
+      setUser(res.data.user);
+      return { success: true };
+    } catch (err) {
+      return {
+        success: false,
+        message: err.response?.data?.message || "Update failed",
+      };
+    }
+  };
+
+  const changePassword = async ({ currentPassword, newPassword }) => {
+    try {
+      await axiosInstance.patch("/auth/change-password", {
+        currentPassword,
+        newPassword,
+      });
+      return { success: true };
+    } catch (err) {
+      return {
+        success: false,
+        message: err.response?.data?.message || "Change failed",
+      };
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -108,6 +160,10 @@ export const AuthProvider = ({ children }) => {
         login,
         logout,
         deleteAccount,
+        forgotPassword,
+        resetPassword,
+        updateProfile,
+        changePassword,
       }}
     >
       {children}

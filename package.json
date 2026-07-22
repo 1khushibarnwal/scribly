@@ -9,13 +9,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/1khushibarnwal/EasyRapid_Notes.git"
+    "url": "git+https://github.com/1khushibarnwal/Scribly.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/1khushibarnwal/EasyRapid_Notes/issues"
+    "url": "https://github.com/1khushibarnwal/Scribly/issues"
   },
-  "homepage": "https://github.com/1khushibarnwal/EasyRapid_Notes#readme"
+  "homepage": "https://github.com/1khushibarnwal/Scribly#readme"
 }

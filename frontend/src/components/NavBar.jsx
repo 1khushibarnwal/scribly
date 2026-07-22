@@ -1,6 +1,7 @@
 import { LogOut, PlusIcon, Settings, ChevronDownIcon } from "lucide-react";
 import { Link, useNavigate } from "react-router";
 import { useAuth } from "../context/useAuth";
+import ThemeToggle from "./ThemeToggle";
 
 const NavBar = () => {
   const { user, logout } = useAuth();
@@ -24,6 +25,7 @@ const NavBar = () => {
           </Link>
 
           <div className="flex items-center gap-3">
+            <ThemeToggle />
             {user ? (
               <>
                 <Link to={"/create"} className="btn btn-primary">

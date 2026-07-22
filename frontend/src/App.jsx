@@ -9,6 +9,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AccountSettings from "./pages/AccountSettings";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import PublicNotePage from "./pages/PublicNotePage";
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
       />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/public/:token" element={<PublicNotePage />} />
     </Routes>
   );
 }

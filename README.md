@@ -2,7 +2,7 @@
 
 A fast, no-fuss notes app. Sign up, write a note in seconds, and pick up right where you left off — from anywhere. Every note is private to your account, and you can summarize, tag, pin, share, and export your notes with a click.
 
-**Live app:** [https://scribly.vercel.app](https://scribly.vercel.app)
+**Live app:** [https://scribly-three.vercel.app/](https://scribly-three.vercel.app/)
 
 ---
 

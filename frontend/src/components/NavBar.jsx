@@ -17,7 +17,7 @@ const NavBar = () => {
       <div className="mx-auto max-w-6xl p-4">
         <div className="flex items-center justify-between">
           <h1 className="test-7xl font-bold text-primary font-mono tracking-tight">
-            EasyRapid_Notes
+            Scribly
           </h1>
           <div className="flex items-center gap-4">
             {user ? (

@@ -1,7 +1,7 @@
 {
-  "name": "easyrapid_notes",
+  "name": "scribly",
   "version": "1.0.0",
-  "description": "EasyRapid Notes is a full-stack note-taking web application built with React (frontend) and Express + MongoDB (backend). It enables users to create, organize, and manage notes seamlessly in a clean, responsive interface.",
+  "description": "Scribly is a full-stack note-taking web application built with React (frontend) and Express + MongoDB (backend). It enables users to create, organize, and manage notes seamlessly in a clean, responsive interface.",
   "main": "index.js",
   "scripts": {
     "build": "npm install --prefix backend && npm install --prefix frontend && npm run build --prefix frontend",

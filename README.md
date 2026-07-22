@@ -1,4 +1,6 @@
-EasyRapid Notes is a full-stack note-taking web application built with React (frontend) and Express + MongoDB (backend). It enables users to create, organize, and manage notes seamlessly in a clean, responsive interface.
+# Scribly
+
+A full-stack note-taking web application built with React (frontend) and Express + MongoDB (backend). It enables users to create, organize, and manage notes seamlessly in a clean, responsive interface.
 
 With TailwindCSS + DaisyUI powering the design, Axios for API requests, and Upstash Redis rate limiting for backend security, the project balances modern UI/UX with robust performance.
 

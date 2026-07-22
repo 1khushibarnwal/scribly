@@ -1,10 +1,9 @@
 import Note from "../models/Note.model.js";
-
 import groq from "../config/groq.js";
 
 export async function getAllNotes(req, res) {
   try {
-    const { search } = req.query;
+    const { search, tag } = req.query;
 
     const filter = { user: req.user._id };
 
@@ -15,7 +14,12 @@ export async function getAllNotes(req, res) {
       ];
     }
 
-    const notes = await Note.find(filter).sort({ createdAt: -1 });
+    if (tag && tag.trim()) {
+      filter.tags = tag.trim();
+    }
+
+    // Pinned notes first, then newest first within each group
+    const notes = await Note.find(filter).sort({ pinned: -1, createdAt: -1 });
     res.status(200).json(notes);
   } catch (error) {
     console.error("error in getAllNotes controller", error);
@@ -38,8 +42,8 @@ export async function getNoteById(req, res) {
 
 export async function createNote(req, res) {
   try {
-    const { title, content } = req.body;
-    const note = new Note({ title, content, user: req.user._id });
+    const { title, content, tags } = req.body;
+    const note = new Note({ title, content, tags, user: req.user._id });
 
     const savedNote = await note.save();
     res.status(201).json(savedNote);
@@ -51,10 +55,10 @@ export async function createNote(req, res) {
 
 export async function updateNote(req, res) {
   try {
-    const { title, content } = req.body;
+    const { title, content, tags } = req.body;
     const updatedNote = await Note.findOneAndUpdate(
       { _id: req.params.id, user: req.user._id },
-      { title, content },
+      { title, content, tags },
       { new: true },
     );
 
@@ -81,6 +85,22 @@ export async function deleteNote(req, res) {
     res.status(200).json({ message: "Note deleted successfully!" });
   } catch (error) {
     console.error("error in deleteNote controller", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+export async function togglePin(req, res) {
+  try {
+    const note = await Note.findOne({ _id: req.params.id, user: req.user._id });
+
+    if (!note) return res.status(404).json({ message: "Note not found" });
+
+    note.pinned = !note.pinned;
+    await note.save();
+
+    res.status(200).json(note);
+  } catch (error) {
+    console.error("error in togglePin controller", error);
     res.status(500).json({ message: "Internal server error" });
   }
 }

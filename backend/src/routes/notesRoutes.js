@@ -6,6 +6,7 @@ import {
   deleteNote,
   getNoteById,
   summarizeNote,
+  togglePin,
 } from "../../src/controllers/notesController.js";
 import { protectRoute } from "../middleware/auth.middleware.js";
 import { validate } from "../middleware/validate.middleware.js";
@@ -20,6 +21,7 @@ router.get("/:id", getNoteById);
 router.post("/", validate(noteSchema), createNote);
 router.put("/:id", validate(noteSchema), updateNote);
 router.delete("/:id", deleteNote);
+router.patch("/:id/pin", togglePin);
 router.post("/:id/summarize", summarizeNote);
 
 export default router;

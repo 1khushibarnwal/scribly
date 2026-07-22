@@ -4,6 +4,7 @@ import { Link, useNavigate, useParams } from "react-router";
 import api from "../lib/axios";
 import toast from "react-hot-toast";
 import { ArrowLeftIcon, LoaderIcon, Trash2Icon } from "lucide-react";
+import NavBar from "../components/NavBar";
 
 const NoteDetailPage = () => {
   const [note, setNote] = useState(null);
@@ -73,6 +74,7 @@ const NoteDetailPage = () => {
 
   return (
     <div className="min-h-screen bg-base-200">
+      <NavBar />
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
           <div className="flex items-center justify-between mb-6">

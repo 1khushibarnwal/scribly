@@ -3,6 +3,7 @@ import {
   generateAccessToken,
   generateRefreshToken,
   cookieOptions,
+  clearCookieOptions,
 } from "../utils/generateTokens.js";
 import jwt from "jsonwebtoken";
 
@@ -92,16 +93,13 @@ export const logout = async (req, res) => {
     if (token) {
       try {
         const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
-        // Invalidate the token server-side by removing it from the DB
-        await User.findByIdAndUpdate(decoded.userId, {
-          refreshToken: null,
-        });
+        await User.findByIdAndUpdate(decoded.userId, { refreshToken: null });
       } catch (err) {
         // token invalid/expired — nothing to invalidate, fall through and clear cookie anyway
       }
     }
 
-    res.clearCookie("refreshToken", cookieOptions);
+    res.clearCookie("refreshToken", clearCookieOptions);
     res.status(200).json({ message: "Logged out successfully" });
   } catch (error) {
     console.error("Logout error:", error.message);

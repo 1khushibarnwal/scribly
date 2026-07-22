@@ -6,10 +6,12 @@ import {
   deleteNote,
   getNoteById,
 } from "../../src/controllers/notesController.js";
+import { protectRoute } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-//ROUTES
+router.use(protectRoute); // applies to every route below
+
 router.get("/", getAllNotes);
 router.get("/:id", getNoteById);
 router.post("/", createNote);

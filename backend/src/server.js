@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import cookieParser from "cookie-parser"; // was missing
 import path from "path";
 
 import notesRoutes from "./routes/notesRoutes.js";
@@ -14,16 +15,17 @@ const app = express();
 const PORT = process.env.PORT || 5001;
 const __dirname = path.resolve();
 
-//middleware -> something which we send just before the "response"
-if (process.env.NODE_ENV !== "production") {
-  app.use(cors({ origin: "http://localhost:5173", credentials: true }));
-}
-
-app.use(express.json()); //this middleware will parse JSON bodies: req.body
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    credentials: true,
+  }),
+);
+app.use(cookieParser()); // was missing — logout/refresh cookies depend on this
+app.use(express.json());
 app.use(rateLimiter);
 
-//actual work
-app.use("/api/notes", notesRoutes); // prefix: "/api/notes"
+app.use("/api/notes", notesRoutes);
 app.use("/api/auth", authRoutes);
 
 if (process.env.NODE_ENV === "production") {

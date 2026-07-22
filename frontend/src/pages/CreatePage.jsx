@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import api from "../lib/axios.js";
+import NavBar from "../components/NavBar";
 
 const CreatePage = () => {
   const [title, setTitle] = useState("");
@@ -44,6 +45,7 @@ const CreatePage = () => {
 
   return (
     <div className="min-h-screen bg-base-200">
+      <NavBar />
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
           <Link to={"/"} className="btn btn-ghost mb-6">

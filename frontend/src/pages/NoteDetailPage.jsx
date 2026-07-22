@@ -7,13 +7,16 @@ import {
   LoaderIcon,
   Trash2Icon,
   SparklesIcon,
+  PinIcon,
 } from "lucide-react";
 import NavBar from "../components/NavBar";
 
 const NoteDetailPage = () => {
   const [note, setNote] = useState(null);
+  const [tagsInput, setTagsInput] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [pinning, setPinning] = useState(false);
   const [summary, setSummary] = useState("");
   const [summarizing, setSummarizing] = useState(false);
 
@@ -26,6 +29,7 @@ const NoteDetailPage = () => {
       try {
         const res = await api.get(`/notes/${id}`);
         setNote(res.data);
+        setTagsInput((res.data.tags || []).join(", "));
       } catch (error) {
         console.log("Error in fetching note", error);
         toast.error("Failed to fetch the note");
@@ -64,17 +68,40 @@ const NoteDetailPage = () => {
       return;
     }
 
+    const tags = tagsInput
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean);
+
     setSaving(true);
 
     try {
-      await api.put(`/notes/${id}`, note);
+      await api.put(`/notes/${id}`, {
+        title: note.title,
+        content: note.content,
+        tags,
+      });
       toast.success("Note updated successfully");
       navigate("/dashboard");
     } catch (error) {
       console.log("Error saving the note:", error);
-      toast.error("Failed to update note");
+      toast.error(error.response?.data?.message || "Failed to update note");
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleTogglePin = async () => {
+    setPinning(true);
+    try {
+      const res = await api.patch(`/notes/${id}/pin`);
+      setNote(res.data);
+      toast.success(res.data.pinned ? "Note pinned" : "Note unpinned");
+    } catch (error) {
+      console.log("Error toggling pin", error);
+      toast.error("Failed to update pin");
+    } finally {
+      setPinning(false);
     }
   };
 
@@ -110,13 +137,26 @@ const NoteDetailPage = () => {
               <ArrowLeftIcon className="h-5 w-5" />
               Back to Notes
             </Link>
-            <button
-              onClick={handleDelete}
-              className="btn btn-error btn-outline"
-            >
-              <Trash2Icon className="h-5 w-5" />
-              Delete Note
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleTogglePin}
+                disabled={pinning}
+                className={`btn btn-outline ${note.pinned ? "btn-primary" : ""}`}
+              >
+                <PinIcon
+                  className="h-5 w-5"
+                  fill={note.pinned ? "currentColor" : "none"}
+                />
+                {note.pinned ? "Pinned" : "Pin"}
+              </button>
+              <button
+                onClick={handleDelete}
+                className="btn btn-error btn-outline"
+              >
+                <Trash2Icon className="h-5 w-5" />
+                Delete Note
+              </button>
+            </div>
           </div>
 
           <div className="card bg-base-100 border-2 border-[#00ff9d]/30">
@@ -146,6 +186,19 @@ const NoteDetailPage = () => {
                   onChange={(e) =>
                     setNote({ ...note, content: e.target.value })
                   }
+                />
+              </div>
+
+              <div className="form-control mb-4">
+                <label className="label">
+                  <span className="label-text">Tags (comma-separated)</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="work, ideas, urgent"
+                  className="input input-bordered"
+                  value={tagsInput}
+                  onChange={(e) => setTagsInput(e.target.value)}
                 />
               </div>
 

@@ -1,14 +1,14 @@
 import { ArrowLeftIcon } from "lucide-react";
-import React from "react";
+import NavBar from "../components/NavBar";
 import { Link, useNavigate } from "react-router";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import api from "../lib/axios.js";
-import NavBar from "../components/NavBar";
 
 const CreatePage = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [tagsInput, setTagsInput] = useState("");
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -21,22 +21,26 @@ const CreatePage = () => {
       return;
     }
 
+    const tags = tagsInput
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean);
+
     setLoading(true);
     try {
-      await api.post("/notes", {
-        title,
-        content,
-      });
+      await api.post("/notes", { title, content, tags });
       toast.success("Note created successfully!");
-      navigate("/");
+      navigate("/dashboard");
     } catch (error) {
-      if (error.response.status === 429) {
+      if (error.response?.status === 429) {
         toast.error("Slow down! You're creating notes too fast.", {
           duration: 4000,
           icon: "💀",
         });
       } else {
-        toast.error("Failed to create note :(");
+        toast.error(
+          error.response?.data?.message || "Failed to create note :(",
+        );
       }
     } finally {
       setLoading(false);
@@ -78,6 +82,19 @@ const CreatePage = () => {
                     className="textarea textarea-bordered h-32"
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
+                  />
+                </div>
+
+                <div className="form-control mb-4">
+                  <label className="label">
+                    <span className="label-text">Tags (comma-separated)</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="work, ideas, urgent"
+                    className="input input-bordered"
+                    value={tagsInput}
+                    onChange={(e) => setTagsInput(e.target.value)}
                   />
                 </div>
 

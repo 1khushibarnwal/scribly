@@ -1,13 +1,14 @@
-import { PenSquareIcon, Trash2Icon, SparklesIcon } from "lucide-react";
-import React, { useState } from "react";
+import { PenSquareIcon, Trash2Icon, SparklesIcon, PinIcon } from "lucide-react";
+import { useState } from "react";
 import { Link } from "react-router";
 import { formatDate } from "../lib/utils";
 import api from "../lib/axios.js";
 import toast from "react-hot-toast";
 
-const NoteCard = ({ note, setNotes }) => {
+const NoteCard = ({ note, setNotes, onTagClick }) => {
   const [summary, setSummary] = useState("");
   const [summarizing, setSummarizing] = useState(false);
+  const [pinning, setPinning] = useState(false);
 
   const handleDelete = async (e, id) => {
     e.preventDefault(); // to prevent default navigation effect over the NoteDetailPage
@@ -39,14 +40,75 @@ const NoteCard = ({ note, setNotes }) => {
     }
   };
 
+  const handleTogglePin = async (e) => {
+    e.preventDefault(); // don't navigate to detail page
+
+    setPinning(true);
+    try {
+      const res = await api.patch(`/notes/${note._id}/pin`);
+      setNotes((prev) =>
+        prev
+          .map((n) => (n._id === note._id ? res.data : n))
+          .sort((a, b) => {
+            if (a.pinned !== b.pinned) return b.pinned - a.pinned;
+            return new Date(b.createdAt) - new Date(a.createdAt);
+          }),
+      );
+    } catch (error) {
+      console.log("Error toggling pin", error);
+      toast.error("Failed to update pin");
+    } finally {
+      setPinning(false);
+    }
+  };
+
+  const handleTagClick = (e, tag) => {
+    e.preventDefault(); // don't navigate to detail page
+    onTagClick?.(tag);
+  };
+
   return (
     <Link
       to={`/note/${note._id}`}
-      className="card bg-base-100 hover:shadow-lg transition-all duration-200 border-2 border-[#00ff9d]/30 hover:border-[#00ff9d]"
+      className={`card bg-base-100 hover:shadow-lg transition-all duration-200 border-2 ${
+        note.pinned
+          ? "border-primary"
+          : "border-[#00ff9d]/30 hover:border-[#00ff9d]"
+      }`}
     >
       <div className="card-body">
-        <h3 className="card-title text-base-content">{note.title}</h3>
+        <div className="flex items-start justify-between gap-2">
+          <h3 className="card-title text-base-content">{note.title}</h3>
+          <button
+            className={`btn btn-ghost btn-xs shrink-0 ${
+              note.pinned ? "text-primary" : ""
+            }`}
+            onClick={handleTogglePin}
+            disabled={pinning}
+            title={note.pinned ? "Unpin" : "Pin to top"}
+          >
+            <PinIcon
+              className="size-4"
+              fill={note.pinned ? "currentColor" : "none"}
+            />
+          </button>
+        </div>
+
         <p className="text-base-content/70 line-clamp-3">{note.content}</p>
+
+        {note.tags?.length > 0 && (
+          <div className="flex flex-wrap gap-1 mt-2">
+            {note.tags.map((tag) => (
+              <button
+                key={tag}
+                onClick={(e) => handleTagClick(e, tag)}
+                className="badge badge-outline badge-sm hover:badge-primary"
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+        )}
 
         {summarizing && (
           <p className="text-xs text-base-content/50 italic mt-2">

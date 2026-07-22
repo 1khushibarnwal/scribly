@@ -4,9 +4,18 @@ import groq from "../config/groq.js";
 
 export async function getAllNotes(req, res) {
   try {
-    const notes = await Note.find({ user: req.user._id }).sort({
-      createdAt: -1,
-    });
+    const { search } = req.query;
+
+    const filter = { user: req.user._id };
+
+    if (search && search.trim()) {
+      filter.$or = [
+        { title: { $regex: search.trim(), $options: "i" } },
+        { content: { $regex: search.trim(), $options: "i" } },
+      ];
+    }
+
+    const notes = await Note.find(filter).sort({ createdAt: -1 });
     res.status(200).json(notes);
   } catch (error) {
     console.error("error in getAllNotes controller", error);

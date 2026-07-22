@@ -8,6 +8,8 @@ import {
   summarizeNote,
 } from "../../src/controllers/notesController.js";
 import { protectRoute } from "../middleware/auth.middleware.js";
+import { validate } from "../middleware/validate.middleware.js";
+import { noteSchema } from "../validators/note.validator.js";
 
 const router = express.Router();
 
@@ -15,8 +17,8 @@ router.use(protectRoute); // applies to every route below
 
 router.get("/", getAllNotes);
 router.get("/:id", getNoteById);
-router.post("/", createNote);
-router.put("/:id", updateNote);
+router.post("/", validate(noteSchema), createNote);
+router.put("/:id", validate(noteSchema), updateNote);
 router.delete("/:id", deleteNote);
 router.post("/:id/summarize", summarizeNote);
 

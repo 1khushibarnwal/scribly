@@ -34,6 +34,45 @@ A fast, no-fuss notes app. Sign up, write a note in seconds, and pick up right w
 
 ---
 
+## Libraries Used
+
+### Frontend
+
+| Library                   | Purpose                                                        |
+| ------------------------- | -------------------------------------------------------------- |
+| `react`                   | UI library                                                     |
+| `react-dom`               | React rendering for the web                                    |
+| `react-router`            | Client-side routing                                            |
+| `axios`                   | HTTP client for API requests                                   |
+| `react-hot-toast`         | Toast notifications                                            |
+| `react-markdown`          | Rendering Markdown content in notes                            |
+| `remark-gfm`              | GitHub-flavored Markdown support (tables, strikethrough, etc.) |
+| `jspdf`                   | Client-side PDF generation for note export                     |
+| `lucide-react`            | Icon set used throughout the UI                                |
+| `tailwindcss`             | Utility-first CSS framework                                    |
+| `daisyui`                 | Tailwind component library / theming                           |
+| `@tailwindcss/typography` | Prose styling for rendered Markdown                            |
+| `vite`                    | Frontend build tool and dev server                             |
+
+### Backend
+
+| Library                                 | Purpose                                         |
+| --------------------------------------- | ----------------------------------------------- |
+| `express`                               | Web server framework                            |
+| `mongoose`                              | MongoDB object modeling                         |
+| `dotenv`                                | Environment variable loading                    |
+| `cors`                                  | Cross-origin resource sharing                   |
+| `cookie-parser`                         | Parsing httpOnly cookies                        |
+| `jsonwebtoken`                          | Signing and verifying JWT access/refresh tokens |
+| `bcryptjs`                              | Password hashing                                |
+| `zod`                                   | Request body validation                         |
+| `groq-sdk`                              | AI note summarization via Groq                  |
+| `resend`                                | Transactional email (password reset)            |
+| `@upstash/ratelimit` + `@upstash/redis` | Redis-backed rate limiting                      |
+| `nodemon`                               | Auto-restarting the dev server on file changes  |
+
+---
+
 ## Project Structure
 
 ```

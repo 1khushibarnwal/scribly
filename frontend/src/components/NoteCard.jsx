@@ -111,6 +111,24 @@ const NoteCard = ({ note, setNotes, onTagClick }) => {
           </div>
         )}
 
+        {note.images?.length > 0 && (
+          <div className="flex gap-1 mt-2">
+            {note.images.slice(0, 3).map((img) => (
+              <img
+                key={img.publicId}
+                src={img.url}
+                alt=""
+                className="size-10 object-cover rounded border border-base-300"
+              />
+            ))}
+            {note.images.length > 3 && (
+              <div className="size-10 rounded border border-base-300 bg-base-200 flex items-center justify-center text-xs text-base-content/60">
+                +{note.images.length - 3}
+              </div>
+            )}
+          </div>
+        )}
+
         {summarizing && (
           <p className="text-xs text-base-content/50 italic mt-2">
             Summarizing...

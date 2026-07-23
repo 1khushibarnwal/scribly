@@ -25,9 +25,17 @@ const noteSchema = new mongoose.Schema(
     },
     shareToken: {
       type: String,
-      default: null,
       unique: true,
       sparse: true, // allows many notes to have shareToken: null without violating uniqueness
+    },
+    images: {
+      type: [
+        {
+          url: String,
+          publicId: String, // needed to delete the image from Cloudinary later
+        },
+      ],
+      default: [],
     },
   },
   { timestamps: true },

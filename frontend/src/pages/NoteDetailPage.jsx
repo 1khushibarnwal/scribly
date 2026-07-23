@@ -14,6 +14,8 @@ import {
   Share2Icon,
   DownloadIcon,
   FileTextIcon,
+  ImagePlusIcon,
+  XIcon,
 } from "lucide-react";
 import NavBar from "../components/NavBar";
 
@@ -27,6 +29,7 @@ const NoteDetailPage = () => {
   const [summary, setSummary] = useState("");
   const [summarizing, setSummarizing] = useState(false);
   const [activeTab, setActiveTab] = useState("write"); // "write" | "preview"
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   const textareaRef = useRef(null);
   const navigate = useNavigate();
@@ -166,6 +169,42 @@ const NoteDetailPage = () => {
     const lines = doc.splitTextToSize(note.content, 180);
     doc.text(lines, 15, 32);
     doc.save(`${note.title || "note"}.pdf`);
+  };
+
+  const handleAddImage = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const res = await api.post(`/notes/${id}/images`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      setNote(res.data);
+      toast.success("Image added");
+    } catch (error) {
+      console.log("Error uploading image", error);
+      toast.error(error.response?.data?.message || "Failed to upload image");
+    } finally {
+      setUploadingImage(false);
+      e.target.value = "";
+    }
+  };
+
+  const handleDeleteImage = async (publicId) => {
+    try {
+      const res = await api.delete(
+        `/notes/${id}/images/${encodeURIComponent(publicId)}`,
+      );
+      setNote(res.data);
+      toast.success("Image removed");
+    } catch (error) {
+      console.log("Error deleting image", error);
+      toast.error("Failed to delete image");
+    }
   };
 
   if (loading) {
@@ -313,6 +352,46 @@ const NoteDetailPage = () => {
                 />
               </div>
 
+              <div className="form-control mb-4">
+                <label className="label">
+                  <span className="label-text">Images</span>
+                </label>
+
+                <div className="flex flex-wrap gap-3 mb-3">
+                  {note.images?.map((img) => (
+                    <div key={img.publicId} className="relative">
+                      <img
+                        src={img.url}
+                        alt="Note attachment"
+                        className="size-20 object-cover rounded-lg border border-base-300"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteImage(img.publicId)}
+                        className="absolute -top-2 -right-2 bg-error text-error-content rounded-full size-5 flex items-center justify-center"
+                      >
+                        <XIcon className="size-3" />
+                      </button>
+                    </div>
+                  ))}
+
+                  {(note.images?.length || 0) < 5 && (
+                    <label className="size-20 rounded-lg border-2 border-dashed border-base-300 flex items-center justify-center text-base-content/50 hover:border-primary hover:text-primary cursor-pointer">
+                      <ImagePlusIcon className="size-6" />
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleAddImage}
+                        disabled={uploadingImage}
+                      />
+                    </label>
+                  )}
+                </div>
+                {uploadingImage && (
+                  <p className="text-xs text-base-content/50">Uploading...</p>
+                )}
+              </div>
               <div className="form-control mb-4">
                 <button
                   type="button"

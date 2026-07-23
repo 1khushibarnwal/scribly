@@ -38,6 +38,16 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
+app.use((err, req, res, next) => {
+  if (
+    err.name === "MulterError" ||
+    err.message === "Only image files are allowed"
+  ) {
+    return res.status(400).json({ message: err.message });
+  }
+  next(err);
+});
+
 connectDB().then(() => {
   app.listen(PORT, () => {
     console.log("Server is listening to port", PORT);

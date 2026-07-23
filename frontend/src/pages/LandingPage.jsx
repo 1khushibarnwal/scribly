@@ -35,6 +35,10 @@ const faqs = [
     q: "Can I export my notes if I want to leave?",
     a: "Yes, any note can be exported as a .txt or .pdf file at any time — your data isn't locked in.",
   },
+  {
+    q: "Can I attach images to my notes?",
+    a: "Yes. Each note supports up to 5 image attachments, securely hosted and served through Cloudinary.",
+  },
 ];
 
 const comparisonRows = [
@@ -53,6 +57,11 @@ const comparisonRows = [
   },
   {
     feature: "Full account deletion, no residue",
+    scribly: true,
+    typical: "Varies",
+  },
+  {
+    feature: "Attach images to notes",
     scribly: true,
     typical: "Varies",
   },

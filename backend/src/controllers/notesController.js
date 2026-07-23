@@ -1,6 +1,8 @@
-import Note from "../models/Note.model.js";
 import groq from "../config/groq.js";
 import crypto from "crypto";
+import cloudinary from "../config/cloudinary.js";
+
+import Note from "../models/Note.model.js";
 
 export async function getAllNotes(req, res) {
   try {
@@ -166,11 +168,9 @@ export async function getPublicNote(req, res) {
     );
 
     if (!note) {
-      return res
-        .status(404)
-        .json({
-          message: "This shared note doesn't exist or is no longer shared",
-        });
+      return res.status(404).json({
+        message: "This shared note doesn't exist or is no longer shared",
+      });
     }
 
     res.status(200).json({
@@ -183,5 +183,65 @@ export async function getPublicNote(req, res) {
   } catch (error) {
     console.error("error in getPublicNote controller", error);
     res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+export async function uploadNoteImage(req, res) {
+  try {
+    const note = await Note.findOne({ _id: req.params.id, user: req.user._id });
+    if (!note) return res.status(404).json({ message: "Note not found" });
+
+    if (!req.file) {
+      return res.status(400).json({ message: "No image file provided" });
+    }
+
+    if (note.images.length >= 5) {
+      return res.status(400).json({ message: "Maximum 5 images per note" });
+    }
+
+    const uploadResult = await new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        { folder: "scribly-notes", resource_type: "image" },
+        (error, result) => (error ? reject(error) : resolve(result)),
+      );
+      stream.end(req.file.buffer);
+    });
+
+    note.images.push({
+      url: uploadResult.secure_url,
+      publicId: uploadResult.public_id,
+    });
+    await note.save();
+
+    res.status(201).json(note);
+  } catch (error) {
+    console.error("error in uploadNoteImage controller", error);
+    res
+      .status(500)
+      .json({ message: error.message || "Failed to upload image" });
+  }
+}
+
+export async function deleteNoteImage(req, res) {
+  try {
+    const note = await Note.findOne({ _id: req.params.id, user: req.user._id });
+    if (!note) return res.status(404).json({ message: "Note not found" });
+
+    const image = note.images.find(
+      (img) => img.publicId === req.params.publicId,
+    );
+    if (!image) return res.status(404).json({ message: "Image not found" });
+
+    await cloudinary.uploader.destroy(image.publicId);
+
+    note.images = note.images.filter(
+      (img) => img.publicId !== req.params.publicId,
+    );
+    await note.save();
+
+    res.status(200).json(note);
+  } catch (error) {
+    console.error("error in deleteNoteImage controller", error);
+    res.status(500).json({ message: "Failed to delete image" });
   }
 }

@@ -21,6 +21,7 @@ A fast, no-fuss notes app. Sign up, write a note in seconds, and pick up right w
 - 🗑️ **Full account deletion** — permanently erase your account and all notes on request
 - 🛡️ **Rate limiting** — Redis-backed request throttling to prevent abuse
 - ✅ **Input validation** — Zod schemas validate every request server-side
+- 🖼️ **Image attachments** — attach up to 5 images per note, hosted on Cloudinary
 
 ---
 
@@ -28,7 +29,7 @@ A fast, no-fuss notes app. Sign up, write a note in seconds, and pick up right w
 
 **Frontend:** React, Vite, React Router, Tailwind CSS + DaisyUI, Axios, react-hot-toast, react-markdown, jsPDF
 
-**Backend:** Node.js, Express, MongoDB + Mongoose, JWT, bcryptjs, Zod, Upstash Redis (rate limiting), Groq SDK (AI summaries), Resend (transactional email)
+**Backend:** Node.js, Express, MongoDB + Mongoose, JWT, bcryptjs, Zod, Upstash Redis (rate limiting), Groq SDK (AI summaries), Resend (transactional email), Cloudinary + Multer (image uploads)
 
 **Hosting:** Vercel (frontend), Render (backend), MongoDB Atlas (database)
 
@@ -70,6 +71,8 @@ A fast, no-fuss notes app. Sign up, write a note in seconds, and pick up right w
 | `resend`                                | Transactional email (password reset)            |
 | `@upstash/ratelimit` + `@upstash/redis` | Redis-backed rate limiting                      |
 | `nodemon`                               | Auto-restarting the dev server on file changes  |
+| `cloudinary`                            | Image hosting and storage for note attachments  |
+| `multer`                                | Parsing multipart/form-data image uploads       |
 
 ---
 

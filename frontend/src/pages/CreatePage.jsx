@@ -4,11 +4,13 @@ import { Link, useNavigate } from "react-router";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import api from "../lib/axios.js";
+import ImagePicker from "../components/ImagePicker";
 
 const CreatePage = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tagsInput, setTagsInput] = useState("");
+  const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -28,7 +30,23 @@ const CreatePage = () => {
 
     setLoading(true);
     try {
-      await api.post("/notes", { title, content, tags });
+      const res = await api.post("/notes", { title, content, tags });
+      const noteId = res.data._id;
+
+      // Upload any selected images now that the note exists
+      for (const file of images) {
+        const formData = new FormData();
+        formData.append("image", file);
+        try {
+          await api.post(`/notes/${noteId}/images`, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+          });
+        } catch (imgError) {
+          console.log("Error uploading image", imgError);
+          toast.error(`Failed to upload one of the images`);
+        }
+      }
+
       toast.success("Note created successfully!");
       navigate("/dashboard");
     } catch (error) {
@@ -50,7 +68,7 @@ const CreatePage = () => {
   return (
     <div className="min-h-screen bg-base-200">
       <NavBar />
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-3 sm:px-4 py-8">
         <div className="max-w-2xl mx-auto">
           <Link to={"/dashboard"} className="btn btn-ghost mb-6">
             <ArrowLeftIcon className="size-5" />
@@ -96,6 +114,13 @@ const CreatePage = () => {
                     value={tagsInput}
                     onChange={(e) => setTagsInput(e.target.value)}
                   />
+                </div>
+
+                <div className="form-control mb-4">
+                  <label className="label">
+                    <span className="label-text">Images (optional)</span>
+                  </label>
+                  <ImagePicker files={images} setFiles={setImages} />
                 </div>
 
                 <div className="card-actions justify-end">

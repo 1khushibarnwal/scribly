@@ -142,6 +142,9 @@ UPSTASH_REDIS_REST_TOKEN=your_upstash_token
 CLIENT_URL=http://localhost:5173
 NODE_ENV=development
 PORT=5001
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 ```
 
 Run it:

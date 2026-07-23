@@ -1,8 +1,8 @@
+import crypto from "crypto";
+
+import resend from "../config/resend.js";
 import User from "../models/User.model.js";
 import Note from "../models/Note.model.js";
-
-import crypto from "crypto";
-import resend from "../config/resend.js";
 
 import {
   generateAccessToken,

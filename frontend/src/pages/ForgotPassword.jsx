@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router";
 import toast from "react-hot-toast";
+
 import NavBar from "../components/NavBar";
 import { useAuth } from "../context/useAuth";
 

@@ -2,7 +2,9 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router";
 import toast from "react-hot-toast";
 import { useAuth } from "../context/useAuth";
+
 import NavBar from "../components/NavBar";
+import PasswordInput from "../components/PasswordInput";
 
 const Signup = () => {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
@@ -53,10 +55,8 @@ const Signup = () => {
             />
           </div>
           <div className="form-control mb-4">
-            <input
-              type="password"
+            <PasswordInput
               placeholder="Password"
-              className="input input-bordered w-full"
               value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
               required

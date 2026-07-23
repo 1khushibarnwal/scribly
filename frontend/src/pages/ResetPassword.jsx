@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams, Link } from "react-router";
 import toast from "react-hot-toast";
 import NavBar from "../components/NavBar";
 import { useAuth } from "../context/useAuth";
+import PasswordInput from "../components/PasswordInput";
 
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
@@ -48,8 +49,7 @@ const ResetPassword = () => {
           <h2 className="text-2xl font-bold mb-4">Set a new password</h2>
 
           <div className="form-control mb-3">
-            <input
-              type="password"
+            <PasswordInput
               placeholder="New password"
               className="input input-bordered w-full"
               value={password}
@@ -58,8 +58,7 @@ const ResetPassword = () => {
             />
           </div>
           <div className="form-control mb-4">
-            <input
-              type="password"
+            <PasswordInput
               placeholder="Confirm new password"
               className="input input-bordered w-full"
               value={confirmPassword}

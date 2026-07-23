@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { AlertTriangleIcon, Trash2Icon } from "lucide-react";
 import NavBar from "../components/NavBar";
 import { useAuth } from "../context/useAuth";
+import PasswordInput from "../components/PasswordInput";
 
 const AccountSettings = () => {
   const { user, deleteAccount, updateProfile, changePassword } = useAuth();
@@ -129,8 +130,7 @@ const AccountSettings = () => {
                   <label className="label">
                     <span className="label-text">Current password</span>
                   </label>
-                  <input
-                    type="password"
+                  <PasswordInput
                     className="input input-bordered"
                     value={currentPassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}
@@ -141,8 +141,7 @@ const AccountSettings = () => {
                   <label className="label">
                     <span className="label-text">New password</span>
                   </label>
-                  <input
-                    type="password"
+                  <PasswordInput
                     className="input input-bordered"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
@@ -153,8 +152,7 @@ const AccountSettings = () => {
                   <label className="label">
                     <span className="label-text">Confirm new password</span>
                   </label>
-                  <input
-                    type="password"
+                  <PasswordInput
                     className="input input-bordered"
                     value={confirmNewPassword}
                     onChange={(e) => setConfirmNewPassword(e.target.value)}

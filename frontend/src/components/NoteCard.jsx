@@ -1,9 +1,10 @@
 import { PenSquareIcon, Trash2Icon, SparklesIcon, PinIcon } from "lucide-react";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { Link } from "react-router";
+
 import { formatDate } from "../lib/utils";
 import api from "../lib/axios.js";
-import toast from "react-hot-toast";
 
 const NoteCard = ({ note, setNotes, onTagClick }) => {
   const [summary, setSummary] = useState("");

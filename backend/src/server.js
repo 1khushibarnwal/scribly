@@ -9,6 +9,7 @@ import { connectDB } from "../src/config/db.js";
 import rateLimiter from "./middleware/rateLimiter.js";
 import authRoutes from "./routes/auth.route.js";
 import publicRoutes from "./routes/public.route.js";
+import adminRoutes from "./routes/admin.route.js";
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ app.use("/api/public", publicRoutes);
 
 app.use("/api/notes", notesRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/admin", adminRoutes);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/dist")));

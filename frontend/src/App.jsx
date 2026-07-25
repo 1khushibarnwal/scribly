@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router";
+
 import LandingPage from "./pages/LandingPage";
 import HomePage from "./pages/HomePage";
 import CreatePage from "./pages/CreatePage";
@@ -10,11 +11,21 @@ import AccountSettings from "./pages/AccountSettings";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import PublicNotePage from "./pages/PublicNotePage";
+import AdminPanel from "./pages/AdminPanel";
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute>
+            <AdminPanel />
+          </ProtectedRoute>
+        }
+      />
       <Route
         path="/dashboard"
         element={
@@ -52,6 +63,7 @@ function App() {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/public/:token" element={<PublicNotePage />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }

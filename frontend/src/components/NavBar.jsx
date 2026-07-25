@@ -24,7 +24,7 @@ const NavBar = () => {
     <header className="bg-base-300 border-b border-base-content/10">
       <div className="mx-auto max-w-6xl px-3 py-3 sm:p-4">
         <div className="flex items-center justify-between gap-2">
-          <Link to={user ? "/dashboard" : "/"} className="shrink-0">
+          <Link to={"/"} className="shrink-0">
             <h1 className="text-xl sm:text-3xl font-bold text-primary font-mono tracking-tight">
               Scribly
             </h1>

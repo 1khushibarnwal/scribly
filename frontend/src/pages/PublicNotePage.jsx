@@ -7,6 +7,7 @@ import { LoaderIcon } from "lucide-react";
 import api from "../lib/axios";
 import NavBar from "../components/NavBar";
 import { formatDate } from "../lib/utils";
+import Footer from "../components/Footer";
 
 const PublicNotePage = () => {
   const { token } = useParams();
@@ -82,6 +83,7 @@ const PublicNotePage = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

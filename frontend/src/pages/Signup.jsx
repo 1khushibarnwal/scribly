@@ -5,6 +5,7 @@ import { useAuth } from "../context/useAuth";
 
 import NavBar from "../components/NavBar";
 import PasswordInput from "../components/PasswordInput";
+import Footer from "../components/Footer";
 
 const Signup = () => {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
@@ -73,6 +74,7 @@ const Signup = () => {
           </p>
         </form>
       </div>
+      <Footer />
     </div>
   );
 };

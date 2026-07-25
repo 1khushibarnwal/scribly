@@ -5,6 +5,7 @@ import { useAuth } from "../context/useAuth";
 
 import NavBar from "../components/NavBar";
 import PasswordInput from "../components/PasswordInput";
+import Footer from "../components/Footer";
 
 const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -69,6 +70,7 @@ const Login = () => {
           </div>
         </form>
       </div>
+      <Footer />
     </div>
   );
 };

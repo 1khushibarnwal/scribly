@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router";
 import toast from "react-hot-toast";
+
 import NavBar from "../components/NavBar";
 import { useAuth } from "../context/useAuth";
 import PasswordInput from "../components/PasswordInput";
+import Footer from "../components/Footer";
 
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
@@ -76,6 +78,7 @@ const ResetPassword = () => {
           </p>
         </form>
       </div>
+      <Footer />
     </div>
   );
 };

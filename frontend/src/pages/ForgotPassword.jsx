@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 
 import NavBar from "../components/NavBar";
 import { useAuth } from "../context/useAuth";
+import Footer from "../components/Footer";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -61,6 +62,7 @@ const ForgotPassword = () => {
           </p>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

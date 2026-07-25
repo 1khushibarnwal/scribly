@@ -13,6 +13,7 @@ import {
 import { useState } from "react";
 
 import NavBar from "../components/NavBar";
+import Footer from "../components/Footer";
 
 const faqs = [
   {
@@ -265,12 +266,7 @@ const LandingPage = () => {
       </div>
 
       {/* Footer */}
-      <footer className="border-t border-base-content/10 py-8">
-        <div className="max-w-4xl mx-auto px-4 text-center text-sm text-base-content/50">
-          © {new Date().getFullYear()} Scribly. Built for people who just want
-          to write things down.
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

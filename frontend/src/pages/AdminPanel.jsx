@@ -5,32 +5,37 @@ import { Link } from "react-router";
 import NavBar from "../components/NavBar";
 import api from "../lib/axios";
 import { useAuth } from "../context/useAuth";
+import { formatDate } from "../lib/utils";
 
 const AdminPanel = () => {
-  const { user, checkingSession } = useAuth();
+  const { checkingSession } = useAuth();
   const [stats, setStats] = useState(null);
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [forbidden, setForbidden] = useState(false);
 
   useEffect(() => {
-    // Wait until the session-restore check has actually finished
     if (checkingSession) return;
 
-    const fetchStats = async () => {
+    const fetchData = async () => {
       try {
-        const res = await api.get("/admin/stats");
-        setStats(res.data);
+        const [statsRes, usersRes] = await Promise.all([
+          api.get("/admin/stats"),
+          api.get("/admin/users"),
+        ]);
+        setStats(statsRes.data);
+        setUsers(usersRes.data);
       } catch (error) {
         if (error.response?.status === 403) {
           setForbidden(true);
         }
-        console.log("Admin stats error:", error);
+        console.log("Admin data error:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchStats();
+    fetchData();
   }, [checkingSession]);
 
   if (loading) {
@@ -109,8 +114,8 @@ const AdminPanel = () => {
         <div className="max-w-2xl mx-auto">
           <h1 className="text-2xl font-bold mb-6">Admin Panel</h1>
 
-          {stats ? (
-            <div className="grid grid-cols-2 gap-4">
+          {stats && (
+            <div className="grid grid-cols-2 gap-4 mb-8">
               <div className="card bg-base-100 p-6">
                 <UsersIcon className="size-6 text-primary mb-2" />
                 <p className="text-sm text-base-content/60">Total Users</p>
@@ -122,9 +127,39 @@ const AdminPanel = () => {
                 <p className="text-3xl font-bold">{stats.noteCount}</p>
               </div>
             </div>
-          ) : (
-            <p className="text-error">Unable to load stats.</p>
           )}
+
+          <div className="card bg-base-100">
+            <div className="card-body">
+              <h2 className="card-title text-lg mb-2">Users</h2>
+              {users.length === 0 ? (
+                <p className="text-base-content/60 text-sm">No users found.</p>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="table table-sm">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Joined</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {users.map((u) => (
+                        <tr key={u._id}>
+                          <td className="font-medium">{u.name}</td>
+                          <td className="text-base-content/70">{u.email}</td>
+                          <td className="text-base-content/60">
+                            {formatDate(new Date(u.createdAt))}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>

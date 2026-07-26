@@ -1,4 +1,5 @@
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const BASE_URL =
   import.meta.env.MODE === "development"
@@ -17,5 +18,20 @@ export const setupInterceptor = (getToken) => {
     return config;
   });
 };
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (!error.response) {
+      // Request never reached the server — no internet, DNS failure, or backend fully down
+      if (!navigator.onLine) {
+        toast.error("You're offline. Reconnect and try again.");
+      } else {
+        toast.error("Couldn't reach the server. Please try again shortly.");
+      }
+    }
+    return Promise.reject(error);
+  },
+);
 
 export default api;

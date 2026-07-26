@@ -22,6 +22,8 @@ A fast, no-fuss notes app. Sign up, write a note in seconds, and pick up right w
 - 🛡️ **Rate limiting** — Redis-backed request throttling to prevent abuse
 - ✅ **Input validation** — Zod schemas validate every request server-side
 - 🖼️ **Image attachments** — attach up to 5 images per note, hosted on Cloudinary
+- 📡 **Offline detection** — banner alerts when the connection drops or the server becomes unreachable
+- 🔎 **Custom 404 page** — friendly fallback for any unmatched route
 
 ---
 
@@ -105,15 +107,13 @@ Scribly/
 
 ---
 
----
-
 ## Getting Started Locally
 
 ### Prerequisites
 
 - Node.js 18+
 - A MongoDB Atlas cluster (or local MongoDB)
-- API keys for [Groq](https://console.groq.com), [Resend](https://resend.com), and [Upstash Redis](https://console.upstash.com)
+- API keys for [Groq](https://console.groq.com), [Resend](https://resend.com), [Upstash Redis](https://console.upstash.com), and [Cloudinary](https://cloudinary.com)
 
 ### 1. Clone the repo
 

@@ -4,13 +4,18 @@ import { Link } from "react-router";
 
 import NavBar from "../components/NavBar";
 import api from "../lib/axios";
+import { useAuth } from "../context/useAuth";
 
 const AdminPanel = () => {
+  const { user, checkingSession } = useAuth();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [forbidden, setForbidden] = useState(false);
 
   useEffect(() => {
+    // Wait until the session-restore check has actually finished
+    if (checkingSession) return;
+
     const fetchStats = async () => {
       try {
         const res = await api.get("/admin/stats");
@@ -19,13 +24,14 @@ const AdminPanel = () => {
         if (error.response?.status === 403) {
           setForbidden(true);
         }
+        console.log("Admin stats error:", error);
       } finally {
         setLoading(false);
       }
     };
 
     fetchStats();
-  }, []);
+  }, [checkingSession]);
 
   if (loading) {
     return (

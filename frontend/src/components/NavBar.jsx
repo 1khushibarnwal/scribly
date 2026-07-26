@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   LogOut,
   PlusIcon,
@@ -5,23 +6,60 @@ import {
   ChevronDownIcon,
   Github,
 } from "lucide-react";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useLocation } from "react-router";
 import { useAuth } from "../context/useAuth";
 import ThemeToggle from "./ThemeToggle";
+
+const sections = [
+  { id: "features", label: "Features" },
+  { id: "how-it-works", label: "How it works" },
+  { id: "compare", label: "Compare" },
+  { id: "faq", label: "FAQ" },
+];
 
 const NavBar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isLandingPage = location.pathname === "/";
+
+  const [activeSection, setActiveSection] = useState(null);
+
+  useEffect(() => {
+    if (!isLandingPage) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      { rootMargin: "-40% 0px -50% 0px" }, // triggers when a section is roughly centered in the viewport
+    );
+
+    sections.forEach(({ id }) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, [isLandingPage]);
 
   const handleLogout = async () => {
     await logout();
     navigate("/");
   };
 
+  const scrollToSection = (id) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  };
+
   const initial = user?.name?.charAt(0)?.toUpperCase() || "?";
 
   return (
-    <header className="bg-base-300 border-b border-base-content/10">
+    <header className="bg-base-300 border-b border-base-content/10 sticky top-0 z-40">
       <div className="mx-auto max-w-6xl px-3 py-3 sm:p-4">
         <div className="flex items-center justify-between gap-2">
           <Link to={"/"} className="shrink-0">
@@ -29,6 +67,24 @@ const NavBar = () => {
               Scribly
             </h1>
           </Link>
+
+          {isLandingPage && (
+            <nav className="hidden lg:flex items-center gap-6 text-sm">
+              {sections.map((section) => (
+                <button
+                  key={section.id}
+                  onClick={() => scrollToSection(section.id)}
+                  className={
+                    activeSection === section.id
+                      ? "text-primary font-medium"
+                      : "text-base-content/70 hover:text-primary"
+                  }
+                >
+                  {section.label}
+                </button>
+              ))}
+            </nav>
+          )}
 
           <div className="flex items-center gap-1 sm:gap-3">
             <a

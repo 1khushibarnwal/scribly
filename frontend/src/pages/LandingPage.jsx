@@ -102,7 +102,7 @@ const LandingPage = () => {
       </div>
 
       {/* Feature cards */}
-      <div className="max-w-4xl mx-auto px-4 pb-20">
+      <div id="features" className="max-w-4xl mx-auto px-4 pb-20 scroll-m-20">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
           <div className="card bg-base-100 p-6">
             <NotebookPenIcon className="size-8 text-primary mb-3" />
@@ -130,7 +130,10 @@ const LandingPage = () => {
       </div>
 
       {/* How it works */}
-      <div className="bg-base-300 border-y border-base-content/10">
+      <div
+        id="how-it-works"
+        className="bg-base-300 border-y border-base-content/10 scroll-mt-20"
+      >
         <div className="max-w-4xl mx-auto px-4 py-20">
           <h2 className="text-3xl font-bold text-center mb-12">How it works</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
@@ -182,7 +185,10 @@ const LandingPage = () => {
       </div>
 
       {/* Comparison table */}
-      <div className="bg-base-300 border-y border-base-content/10">
+      <div
+        id="compare"
+        className="bg-base-300 border-y border-base-content/10 scroll-mt-20"
+      >
         <div className="max-w-4xl mx-auto px-4 py-20">
           <h2 className="text-3xl font-bold text-center mb-4">
             How Scribly compares
@@ -230,7 +236,7 @@ const LandingPage = () => {
       </div>
 
       {/* FAQ */}
-      <div className="max-w-3xl mx-auto px-4 py-20">
+      <div id="faq" className="max-w-3xl mx-auto px-4 py-20 scroll-mt-20">
         <h2 className="text-3xl font-bold text-center mb-12">
           Frequently asked questions
         </h2>

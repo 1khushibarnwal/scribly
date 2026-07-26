@@ -23,7 +23,7 @@ app.use(
     credentials: true,
   }),
 );
-app.use(cookieParser()); // was missing — logout/refresh cookies depend on this
+app.use(cookieParser());
 app.use(express.json());
 app.use(rateLimiter);
 app.use("/api/public", publicRoutes);

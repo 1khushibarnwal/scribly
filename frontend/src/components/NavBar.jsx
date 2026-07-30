@@ -62,7 +62,13 @@ const NavBar = () => {
     <header className="bg-base-300 border-b border-base-content/10 sticky top-0 z-40">
       <div className="mx-auto max-w-6xl px-3 py-3 sm:p-4">
         <div className="flex items-center justify-between gap-2">
-          <Link to={"/"} className="shrink-0">
+          <Link to="/" className="shrink-0 flex items-center gap-2">
+            <img
+              src="/favicon.svg"
+              alt="Scribly logo"
+              className="w-8 h-8 sm:w-9 sm:h-9 object-contain"
+            />
+
             <h1 className="text-xl sm:text-3xl font-bold text-primary font-mono tracking-tight">
               Scribly
             </h1>

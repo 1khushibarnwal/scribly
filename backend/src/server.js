@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import cookieParser from "cookie-parser"; // was missing
+import cookieParser from "cookie-parser";
 import path from "path";
 
 import notesRoutes from "./routes/notesRoutes.js";

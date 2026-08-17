@@ -212,3 +212,7 @@ Use this if deploying to a single platform (e.g. one Render web service) rather 
 ## License
 
 ISC
+
+---
+
+Built with ❤️ by [Khushi Barnwal](https://github.com/1khushibarnwal)

@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import {
   LogOut,
   PlusIcon,
@@ -6,6 +5,7 @@ import {
   ChevronDownIcon,
   Github,
 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router";
 import { useAuth } from "../context/useAuth";
 import ThemeToggle from "./ThemeToggle";
@@ -36,7 +36,7 @@ const NavBar = () => {
           }
         });
       },
-      { rootMargin: "-40% 0px -50% 0px" }, // triggers when a section is roughly centered in the viewport
+      { rootMargin: "-40% 0px -50% 0px" },
     );
 
     sections.forEach(({ id }) => {
@@ -62,13 +62,7 @@ const NavBar = () => {
     <header className="bg-base-300 border-b border-base-content/10 sticky top-0 z-40">
       <div className="mx-auto max-w-6xl px-3 py-3 sm:p-4">
         <div className="flex items-center justify-between gap-2">
-          <Link to="/" className="shrink-0 flex items-center gap-2">
-            <img
-              src="/favicon.svg"
-              alt="Scribly logo"
-              className="w-8 h-8 sm:w-9 sm:h-9 object-contain"
-            />
-
+          <Link to={"/"} className="shrink-0">
             <h1 className="text-xl sm:text-3xl font-bold text-primary font-mono tracking-tight">
               Scribly
             </h1>
@@ -94,7 +88,7 @@ const NavBar = () => {
 
           <div className="flex items-center gap-1 sm:gap-3">
             <a
-              href="https://github.com/1khushibarnwal/Scribly"
+              href="https://github.com/1khushibarnwal/scribly"
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-ghost btn-circle btn-sm sm:btn-md"
@@ -145,6 +139,13 @@ const NavBar = () => {
                         Account Settings
                       </Link>
                     </li>
+                    {/* ADDITION #1 — About/Privacy links in the logged-in dropdown */}
+                    <li>
+                      <Link to="/about">About</Link>
+                    </li>
+                    <li>
+                      <Link to="/privacy">Privacy</Link>
+                    </li>
                     <li>
                       <button onClick={handleLogout} className="text-error">
                         <LogOut className="size-4" />
@@ -155,7 +156,20 @@ const NavBar = () => {
                 </div>
               </>
             ) : (
+              /* ADDITION #2 — About/Privacy text links for logged-out visitors */
               <>
+                <Link
+                  to="/about"
+                  className="link link-hover text-sm hidden sm:inline"
+                >
+                  About
+                </Link>
+                <Link
+                  to="/privacy"
+                  className="link link-hover text-sm hidden sm:inline"
+                >
+                  Privacy
+                </Link>
                 <Link
                   to={"/login"}
                   className="btn btn-outline btn-primary btn-sm sm:btn-md"

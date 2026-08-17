@@ -13,6 +13,8 @@ import ResetPassword from "./pages/ResetPassword";
 import PublicNotePage from "./pages/PublicNotePage";
 import AdminPanel from "./pages/AdminPanel";
 import NotFoundPage from "./pages/NotFoundPage";
+import AboutPage from "./pages/AboutPage";
+import PrivacyPage from "./pages/PrivacyPage";
 
 function App() {
   return (
@@ -63,6 +65,8 @@ function App() {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/public/:token" element={<PublicNotePage />} />
+      <Route path="/about" element={<AboutPage />} />
+      <Route path="/privacy" element={<PrivacyPage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );

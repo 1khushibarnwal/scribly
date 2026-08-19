@@ -115,7 +115,7 @@ export async function summarizeNote(req, res) {
     if (!note) return res.status(404).json({ message: "Note not found" });
 
     const completion = await groq.chat.completions.create({
-      model: "llama-3.1-8b-instant",
+      model: "openai/gpt-oss-20b",
       messages: [
         {
           role: "system",

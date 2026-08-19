@@ -2,7 +2,7 @@ import { PenSquareIcon, Trash2Icon, SparklesIcon, PinIcon } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 
 import { formatDate } from "../lib/utils";
 import api from "../lib/axios.js";
@@ -95,6 +95,7 @@ const NoteCard = ({ note, setNotes, onTagClick }) => {
         }`}
       >
         <div className="card-body">
+          {/* Header */}
           <div className="flex items-start justify-between gap-2">
             <h3 className="card-title text-base-content">{note.title}</h3>
 
@@ -105,12 +106,8 @@ const NoteCard = ({ note, setNotes, onTagClick }) => {
               onClick={handleTogglePin}
               disabled={pinning}
               title={note.pinned ? "Unpin" : "Pin to top"}
-              whileHover={{
-                scale: 1.08,
-              }}
-              whileTap={{
-                scale: 0.9,
-              }}
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.9 }}
             >
               <motion.div
                 key={note.pinned ? "pinned" : "unpinned"}
@@ -142,8 +139,10 @@ const NoteCard = ({ note, setNotes, onTagClick }) => {
             </motion.button>
           </div>
 
+          {/* Content */}
           <p className="text-base-content/70 line-clamp-3">{note.content}</p>
 
+          {/* Tags */}
           {note.tags?.length > 0 && (
             <div className="flex flex-wrap gap-1 mt-2">
               {note.tags.map((tag) => (
@@ -158,6 +157,7 @@ const NoteCard = ({ note, setNotes, onTagClick }) => {
             </div>
           )}
 
+          {/* Images */}
           {note.images?.length > 0 && (
             <div className="flex gap-1 mt-2">
               {note.images.slice(0, 3).map((img) => (
@@ -177,41 +177,154 @@ const NoteCard = ({ note, setNotes, onTagClick }) => {
             </div>
           )}
 
-          {summarizing && (
-            <p className="text-xs text-base-content/50 italic mt-2">
-              Summarizing...
-            </p>
-          )}
+          {/* AI Summary */}
+          <AnimatePresence mode="wait">
+            {summarizing && (
+              <motion.div
+                key="summarizing"
+                initial={{
+                  opacity: 0,
+                  height: 0,
+                  y: 8,
+                }}
+                animate={{
+                  opacity: 1,
+                  height: "auto",
+                  y: 0,
+                }}
+                exit={{
+                  opacity: 0,
+                  height: 0,
+                  y: -5,
+                }}
+                transition={{
+                  duration: 0.25,
+                  ease: "easeOut",
+                }}
+                className="overflow-hidden"
+              >
+                <div className="mt-3 rounded-lg bg-primary/5 border border-primary/20 p-3">
+                  <div className="flex items-center gap-2">
+                    <motion.div
+                      animate={{
+                        rotate: 360,
+                      }}
+                      transition={{
+                        duration: 1.2,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
+                    >
+                      <SparklesIcon className="size-4 text-primary" />
+                    </motion.div>
 
-          {summary && !summarizing && (
-            <p className="text-xs italic text-base-content/60 border-l-2 border-primary pl-2 mt-2">
-              {summary}
-            </p>
-          )}
+                    <span className="text-xs text-primary font-medium">
+                      Generating summary
+                    </span>
 
+                    <div className="flex gap-1 ml-1">
+                      {[0, 1, 2].map((dot) => (
+                        <motion.span
+                          key={dot}
+                          className="size-1 rounded-full bg-primary"
+                          animate={{
+                            opacity: [0.25, 1, 0.25],
+                            scale: [0.8, 1.2, 0.8],
+                          }}
+                          transition={{
+                            duration: 0.9,
+                            repeat: Infinity,
+                            delay: dot * 0.15,
+                            ease: "easeInOut",
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {summary && !summarizing && (
+              <motion.div
+                key="summary"
+                initial={{
+                  opacity: 0,
+                  y: 12,
+                  scale: 0.98,
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                  scale: 1,
+                }}
+                transition={{
+                  duration: 0.4,
+                  ease: "easeOut",
+                }}
+                className="overflow-hidden"
+              >
+                <div className="text-xs italic text-base-content/60 border-l-2 border-primary pl-2 mt-3">
+                  {summary}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Footer */}
           <div className="card-actions justify-between items-center mt-4">
             <span className="text-sm text-base-content/60">
               {formatDate(new Date(note.createdAt))}
             </span>
 
             <div className="flex items-center gap-1">
-              <button
+              {/* AI button */}
+              <motion.button
                 className="btn btn-ghost btn-xs"
                 onClick={handleSummarize}
                 disabled={summarizing}
                 title="Summarize with AI"
+                whileHover={!summarizing ? { scale: 1.08 } : {}}
+                whileTap={!summarizing ? { scale: 0.9 } : {}}
               >
-                <SparklesIcon className="size-4" />
-              </button>
+                <motion.div
+                  animate={
+                    summarizing
+                      ? {
+                          rotate: [0, 10, -10, 0],
+                          scale: [1, 1.15, 1],
+                        }
+                      : {
+                          rotate: 0,
+                          scale: 1,
+                        }
+                  }
+                  transition={
+                    summarizing
+                      ? {
+                          duration: 0.8,
+                          repeat: Infinity,
+                          ease: "easeInOut",
+                        }
+                      : {
+                          duration: 0.2,
+                        }
+                  }
+                >
+                  <SparklesIcon className="size-4" />
+                </motion.div>
+              </motion.button>
 
               <PenSquareIcon className="size-4" />
 
-              <button
+              <motion.button
                 className="btn btn-ghost btn-xs text-error"
                 onClick={(e) => handleDelete(e, note._id)}
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.9 }}
               >
                 <Trash2Icon className="size-4" />
-              </button>
+              </motion.button>
             </div>
           </div>
         </div>

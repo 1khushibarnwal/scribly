@@ -13,13 +13,15 @@ const NoteCard = ({ note, setNotes, onTagClick }) => {
   const [pinning, setPinning] = useState(false);
 
   const handleDelete = async (e, id) => {
-    e.preventDefault(); // to prevent default navigation effect over the NoteDetailPage
+    e.preventDefault();
 
     if (!window.confirm("Are you sure you want to delete this note?")) return;
 
     try {
       await api.delete(`/notes/${id}`);
-      setNotes((prev) => prev.filter((note) => note._id !== id)); // get rid of deleted one from array
+
+      setNotes((prev) => prev.filter((note) => note._id !== id));
+
       toast.success("Note deleted successfully");
     } catch (error) {
       console.log("Error in handleDelete", error);
@@ -28,9 +30,10 @@ const NoteCard = ({ note, setNotes, onTagClick }) => {
   };
 
   const handleSummarize = async (e) => {
-    e.preventDefault(); // don't navigate to detail page
+    e.preventDefault();
 
     setSummarizing(true);
+
     try {
       const res = await api.post(`/notes/${note._id}/summarize`);
       setSummary(res.data.summary);
@@ -43,16 +46,19 @@ const NoteCard = ({ note, setNotes, onTagClick }) => {
   };
 
   const handleTogglePin = async (e) => {
-    e.preventDefault(); // don't navigate to detail page
+    e.preventDefault();
 
     setPinning(true);
+
     try {
       const res = await api.patch(`/notes/${note._id}/pin`);
+
       setNotes((prev) =>
         prev
           .map((n) => (n._id === note._id ? res.data : n))
           .sort((a, b) => {
             if (a.pinned !== b.pinned) return b.pinned - a.pinned;
+
             return new Date(b.createdAt) - new Date(a.createdAt);
           }),
       );
@@ -65,7 +71,7 @@ const NoteCard = ({ note, setNotes, onTagClick }) => {
   };
 
   const handleTagClick = (e, tag) => {
-    e.preventDefault(); // don't navigate to detail page
+    e.preventDefault();
     onTagClick?.(tag);
   };
 
@@ -89,21 +95,51 @@ const NoteCard = ({ note, setNotes, onTagClick }) => {
         }`}
       >
         <div className="card-body">
-          <div className="flex items-start justify-between gap-2 transition-shadow duration-200 hover:shadow-lg">
+          <div className="flex items-start justify-between gap-2">
             <h3 className="card-title text-base-content">{note.title}</h3>
-            <button
+
+            <motion.button
               className={`btn btn-ghost btn-xs shrink-0 ${
                 note.pinned ? "text-primary" : ""
               }`}
               onClick={handleTogglePin}
               disabled={pinning}
               title={note.pinned ? "Unpin" : "Pin to top"}
+              whileHover={{
+                scale: 1.08,
+              }}
+              whileTap={{
+                scale: 0.9,
+              }}
             >
-              <PinIcon
-                className="size-4"
-                fill={note.pinned ? "currentColor" : "none"}
-              />
-            </button>
+              <motion.div
+                key={note.pinned ? "pinned" : "unpinned"}
+                initial={{
+                  scale: 1,
+                  rotate: 0,
+                }}
+                animate={
+                  note.pinned
+                    ? {
+                        scale: [1, 1.2, 1],
+                        rotate: [0, -15, 15, -8, 0],
+                      }
+                    : {
+                        scale: 1,
+                        rotate: 0,
+                      }
+                }
+                transition={{
+                  duration: 0.35,
+                  ease: "easeOut",
+                }}
+              >
+                <PinIcon
+                  className="size-4"
+                  fill={note.pinned ? "currentColor" : "none"}
+                />
+              </motion.div>
+            </motion.button>
           </div>
 
           <p className="text-base-content/70 line-clamp-3">{note.content}</p>
@@ -132,6 +168,7 @@ const NoteCard = ({ note, setNotes, onTagClick }) => {
                   className="size-10 object-cover rounded border border-base-300"
                 />
               ))}
+
               {note.images.length > 3 && (
                 <div className="size-10 rounded border border-base-300 bg-base-200 flex items-center justify-center text-xs text-base-content/60">
                   +{note.images.length - 3}
@@ -156,6 +193,7 @@ const NoteCard = ({ note, setNotes, onTagClick }) => {
             <span className="text-sm text-base-content/60">
               {formatDate(new Date(note.createdAt))}
             </span>
+
             <div className="flex items-center gap-1">
               <button
                 className="btn btn-ghost btn-xs"
@@ -165,7 +203,9 @@ const NoteCard = ({ note, setNotes, onTagClick }) => {
               >
                 <SparklesIcon className="size-4" />
               </button>
+
               <PenSquareIcon className="size-4" />
+
               <button
                 className="btn btn-ghost btn-xs text-error"
                 onClick={(e) => handleDelete(e, note._id)}

@@ -2,6 +2,7 @@ import { PenSquareIcon, Trash2Icon, SparklesIcon, PinIcon } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router";
+import { motion } from "motion/react";
 
 import { formatDate } from "../lib/utils";
 import api from "../lib/axios.js";
@@ -69,102 +70,113 @@ const NoteCard = ({ note, setNotes, onTagClick }) => {
   };
 
   return (
-    <Link
-      to={`/note/${note._id}`}
-      className={`card bg-base-100 hover:shadow-lg transition-all duration-200 border-2 ${
-        note.pinned
-          ? "border-primary"
-          : "border-[#00ff9d]/30 hover:border-[#00ff9d]"
-      }`}
+    <motion.div
+      whileHover={{
+        y: -5,
+        scale: 1.01,
+      }}
+      transition={{
+        duration: 0.2,
+        ease: "easeOut",
+      }}
     >
-      <div className="card-body">
-        <div className="flex items-start justify-between gap-2">
-          <h3 className="card-title text-base-content">{note.title}</h3>
-          <button
-            className={`btn btn-ghost btn-xs shrink-0 ${
-              note.pinned ? "text-primary" : ""
-            }`}
-            onClick={handleTogglePin}
-            disabled={pinning}
-            title={note.pinned ? "Unpin" : "Pin to top"}
-          >
-            <PinIcon
-              className="size-4"
-              fill={note.pinned ? "currentColor" : "none"}
-            />
-          </button>
-        </div>
-
-        <p className="text-base-content/70 line-clamp-3">{note.content}</p>
-
-        {note.tags?.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-2">
-            {note.tags.map((tag) => (
-              <button
-                key={tag}
-                onClick={(e) => handleTagClick(e, tag)}
-                className="badge badge-outline badge-sm hover:badge-primary"
-              >
-                {tag}
-              </button>
-            ))}
-          </div>
-        )}
-
-        {note.images?.length > 0 && (
-          <div className="flex gap-1 mt-2">
-            {note.images.slice(0, 3).map((img) => (
-              <img
-                key={img.publicId}
-                src={img.url}
-                alt=""
-                className="size-10 object-cover rounded border border-base-300"
+      <Link
+        to={`/note/${note._id}`}
+        className={`card bg-base-100 hover:shadow-lg transition-all duration-200 border-2 ${
+          note.pinned
+            ? "border-primary"
+            : "border-[#00ff9d]/30 hover:border-[#00ff9d]"
+        }`}
+      >
+        <div className="card-body">
+          <div className="flex items-start justify-between gap-2 transition-shadow duration-200 hover:shadow-lg">
+            <h3 className="card-title text-base-content">{note.title}</h3>
+            <button
+              className={`btn btn-ghost btn-xs shrink-0 ${
+                note.pinned ? "text-primary" : ""
+              }`}
+              onClick={handleTogglePin}
+              disabled={pinning}
+              title={note.pinned ? "Unpin" : "Pin to top"}
+            >
+              <PinIcon
+                className="size-4"
+                fill={note.pinned ? "currentColor" : "none"}
               />
-            ))}
-            {note.images.length > 3 && (
-              <div className="size-10 rounded border border-base-300 bg-base-200 flex items-center justify-center text-xs text-base-content/60">
-                +{note.images.length - 3}
-              </div>
-            )}
+            </button>
           </div>
-        )}
 
-        {summarizing && (
-          <p className="text-xs text-base-content/50 italic mt-2">
-            Summarizing...
-          </p>
-        )}
+          <p className="text-base-content/70 line-clamp-3">{note.content}</p>
 
-        {summary && !summarizing && (
-          <p className="text-xs italic text-base-content/60 border-l-2 border-primary pl-2 mt-2">
-            {summary}
-          </p>
-        )}
+          {note.tags?.length > 0 && (
+            <div className="flex flex-wrap gap-1 mt-2">
+              {note.tags.map((tag) => (
+                <button
+                  key={tag}
+                  onClick={(e) => handleTagClick(e, tag)}
+                  className="badge badge-outline badge-sm hover:badge-primary"
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+          )}
 
-        <div className="card-actions justify-between items-center mt-4">
-          <span className="text-sm text-base-content/60">
-            {formatDate(new Date(note.createdAt))}
-          </span>
-          <div className="flex items-center gap-1">
-            <button
-              className="btn btn-ghost btn-xs"
-              onClick={handleSummarize}
-              disabled={summarizing}
-              title="Summarize with AI"
-            >
-              <SparklesIcon className="size-4" />
-            </button>
-            <PenSquareIcon className="size-4" />
-            <button
-              className="btn btn-ghost btn-xs text-error"
-              onClick={(e) => handleDelete(e, note._id)}
-            >
-              <Trash2Icon className="size-4" />
-            </button>
+          {note.images?.length > 0 && (
+            <div className="flex gap-1 mt-2">
+              {note.images.slice(0, 3).map((img) => (
+                <img
+                  key={img.publicId}
+                  src={img.url}
+                  alt=""
+                  className="size-10 object-cover rounded border border-base-300"
+                />
+              ))}
+              {note.images.length > 3 && (
+                <div className="size-10 rounded border border-base-300 bg-base-200 flex items-center justify-center text-xs text-base-content/60">
+                  +{note.images.length - 3}
+                </div>
+              )}
+            </div>
+          )}
+
+          {summarizing && (
+            <p className="text-xs text-base-content/50 italic mt-2">
+              Summarizing...
+            </p>
+          )}
+
+          {summary && !summarizing && (
+            <p className="text-xs italic text-base-content/60 border-l-2 border-primary pl-2 mt-2">
+              {summary}
+            </p>
+          )}
+
+          <div className="card-actions justify-between items-center mt-4">
+            <span className="text-sm text-base-content/60">
+              {formatDate(new Date(note.createdAt))}
+            </span>
+            <div className="flex items-center gap-1">
+              <button
+                className="btn btn-ghost btn-xs"
+                onClick={handleSummarize}
+                disabled={summarizing}
+                title="Summarize with AI"
+              >
+                <SparklesIcon className="size-4" />
+              </button>
+              <PenSquareIcon className="size-4" />
+              <button
+                className="btn btn-ghost btn-xs text-error"
+                onClick={(e) => handleDelete(e, note._id)}
+              >
+                <Trash2Icon className="size-4" />
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    </Link>
+      </Link>
+    </motion.div>
   );
 };
 

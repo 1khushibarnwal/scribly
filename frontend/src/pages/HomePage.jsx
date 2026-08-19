@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { SearchIcon, XIcon } from "lucide-react";
+import { motion } from "motion/react";
+
 import NavBar from "../components/NavBar";
 import RateLimitedUI from "../components/RateLimitedUI";
 import toast from "react-hot-toast";
@@ -89,16 +91,45 @@ const HomePage = () => {
         )}
 
         {!loading && notes.length > 0 && !isRateLimited && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: {},
+              visible: {
+                transition: {
+                  staggerChildren: 0.08,
+                },
+              },
+            }}
+          >
             {notes.map((note) => (
-              <NoteCard
+              <motion.div
                 key={note._id}
-                note={note}
-                setNotes={setNotes}
-                onTagClick={setActiveTag}
-              />
+                variants={{
+                  hidden: {
+                    opacity: 0,
+                    y: 20,
+                  },
+                  visible: {
+                    opacity: 1,
+                    y: 0,
+                    transition: {
+                      duration: 0.35,
+                      ease: "easeOut",
+                    },
+                  },
+                }}
+              >
+                <NoteCard
+                  note={note}
+                  setNotes={setNotes}
+                  onTagClick={setActiveTag}
+                />
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         )}
       </div>
     </div>

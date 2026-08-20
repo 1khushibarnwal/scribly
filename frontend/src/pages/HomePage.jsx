@@ -131,13 +131,22 @@ const HomePage = () => {
         {!loading && notes.length > 0 && !isRateLimited && (
           <motion.div
             layout
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="
+              grid
+              grid-cols-1
+              md:grid-cols-2
+              lg:grid-cols-3
+              gap-6
+              items-stretch
+              auto-rows-[minmax(0,320px)]
+            "
           >
             <AnimatePresence mode="popLayout">
               {notes.map((note) => (
                 <motion.div
                   key={note._id}
                   layout
+                  className="h-full min-h-0 w-full"
                   initial={{
                     opacity: 0,
                     y: 20,

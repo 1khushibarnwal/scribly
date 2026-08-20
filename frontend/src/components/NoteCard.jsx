@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { Link } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 
-import { formatDate } from "../lib/utils";
+import { formatDate, sortNotes, UNDO_DELETE_WINDOW_MS } from "../lib/utils";
 import api from "../lib/axios.js";
 
 const NoteCard = ({ note, setNotes, onTagClick }) => {
@@ -12,21 +12,57 @@ const NoteCard = ({ note, setNotes, onTagClick }) => {
   const [summarizing, setSummarizing] = useState(false);
   const [pinning, setPinning] = useState(false);
 
-  const handleDelete = async (e, id) => {
+  const handleDelete = (e, id) => {
     e.preventDefault();
 
-    if (!window.confirm("Are you sure you want to delete this note?")) return;
+    const noteToDelete = note;
+    let undone = false;
 
-    try {
-      await api.delete(`/notes/${id}`);
+    // Optimistically remove the note from the UI right away.
+    setNotes((prev) => prev.filter((n) => n._id !== id));
 
-      setNotes((prev) => prev.filter((note) => note._id !== id));
+    const restoreNote = () => {
+      setNotes((prev) =>
+        prev.some((n) => n._id === noteToDelete._id)
+          ? prev
+          : [...prev, noteToDelete].sort(sortNotes),
+      );
+    };
 
-      toast.success("Note deleted successfully");
-    } catch (error) {
-      console.log("Error in handleDelete", error);
-      toast.error("Failed to delete note :(");
-    }
+    // The actual server-side delete is deferred, so "Undo" just has
+    // to cancel this timeout — nothing needs to be recreated.
+    const timeoutId = setTimeout(async () => {
+      if (undone) return;
+
+      try {
+        await api.delete(`/notes/${id}`);
+      } catch (error) {
+        console.log("Error in handleDelete", error);
+        toast.error("Failed to delete note :(");
+        restoreNote();
+      }
+    }, UNDO_DELETE_WINDOW_MS);
+
+    toast(
+      (t) => (
+        <div className="flex items-center gap-3">
+          <span>Note deleted</span>
+
+          <button
+            className="btn btn-xs btn-primary"
+            onClick={() => {
+              undone = true;
+              clearTimeout(timeoutId);
+              toast.dismiss(t.id);
+              restoreNote();
+            }}
+          >
+            Undo
+          </button>
+        </div>
+      ),
+      { duration: UNDO_DELETE_WINDOW_MS },
+    );
   };
 
   const handleSummarize = async (e) => {
@@ -77,6 +113,7 @@ const NoteCard = ({ note, setNotes, onTagClick }) => {
 
   return (
     <motion.div
+      className="w-full h-full min-h-0"
       whileHover={{
         y: -5,
         scale: 1.01,
@@ -88,13 +125,13 @@ const NoteCard = ({ note, setNotes, onTagClick }) => {
     >
       <Link
         to={`/note/${note._id}`}
-        className={`card bg-base-100 hover:shadow-lg transition-all duration-200 border-2 ${
+        className={`card w-full h-full min-h-0 bg-base-100 hover:shadow-lg transition-all duration-200 border-2 ${
           note.pinned
             ? "border-primary"
             : "border-[#00ff9d]/30 hover:border-[#00ff9d]"
         }`}
       >
-        <div className="card-body">
+        <div className="card-body h-full min-h-0 flex flex-col overflow-hidden">
           {/* Header */}
           <div className="flex items-start justify-between gap-2">
             <h3 className="card-title text-base-content">{note.title}</h3>
@@ -264,7 +301,7 @@ const NoteCard = ({ note, setNotes, onTagClick }) => {
                 }}
                 className="overflow-hidden"
               >
-                <div className="text-xs italic text-base-content/60 border-l-2 border-primary pl-2 mt-3">
+                <div className="text-xs italic text-base-content/60 border-l-2 border-primary pl-2 mt-3 line-clamp-3">
                   {summary}
                 </div>
               </motion.div>
@@ -272,7 +309,7 @@ const NoteCard = ({ note, setNotes, onTagClick }) => {
           </AnimatePresence>
 
           {/* Footer */}
-          <div className="card-actions justify-between items-center mt-4">
+          <div className="card-actions justify-between items-center mt-auto pt-4">
             <span className="text-sm text-base-content/60">
               {formatDate(new Date(note.createdAt))}
             </span>

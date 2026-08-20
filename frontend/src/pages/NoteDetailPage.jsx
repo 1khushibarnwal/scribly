@@ -18,6 +18,7 @@ import {
   XIcon,
 } from "lucide-react";
 import NavBar from "../components/NavBar";
+import { UNDO_DELETE_WINDOW_MS } from "../lib/utils";
 
 const NoteDetailPage = () => {
   const [note, setNote] = useState(null);
@@ -59,17 +60,44 @@ const NoteDetailPage = () => {
     }
   }, [note?.content, activeTab]);
 
-  const handleDelete = async () => {
-    if (!window.confirm("Are you sure you want to delete this note?")) return;
+  const handleDelete = () => {
+    let undone = false;
 
-    try {
-      await api.delete(`/notes/${id}`);
-      toast.success("Note deleted");
-      navigate("/dashboard");
-    } catch (error) {
-      console.log("Error deleting the note:", error);
-      toast.error("Failed to delete note");
-    }
+    // Defer the actual server-side delete so "Undo" can cancel it —
+    // the note is never actually gone until the window elapses.
+    const timeoutId = setTimeout(async () => {
+      if (undone) return;
+      try {
+        await api.delete(`/notes/${id}`);
+      } catch (error) {
+        console.log("Error deleting the note:", error);
+        toast.error("Failed to delete note");
+      }
+    }, UNDO_DELETE_WINDOW_MS);
+
+    toast(
+      (t) => (
+        <div className="flex items-center gap-3">
+          <span>Note deleted</span>
+          <button
+            className="btn btn-xs btn-primary"
+            onClick={() => {
+              undone = true;
+              clearTimeout(timeoutId);
+              toast.dismiss(t.id);
+              // Note was never actually deleted from the server, so
+              // just bring the user back to it.
+              navigate(`/note/${id}`);
+            }}
+          >
+            Undo
+          </button>
+        </div>
+      ),
+      { duration: UNDO_DELETE_WINDOW_MS },
+    );
+
+    navigate("/dashboard");
   };
 
   const handleSave = async () => {

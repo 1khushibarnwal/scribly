@@ -21,6 +21,11 @@ import {
 
 const router = express.Router();
 
+// router.use((req, res, next) => {
+//   console.log("x-my-proxy:", req.headers["x-my-proxy"]);
+//   next();
+// });
+
 router.use(protectRoute); // applies to every route below
 
 router.get("/", getAllNotes);

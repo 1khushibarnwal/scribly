@@ -27,6 +27,18 @@ A fast, no-fuss notes app. Sign up, write a note in seconds, and pick up right w
 
 ---
 
+## Security
+
+- JWT-based authentication with short-lived access tokens
+- httpOnly refresh-token cookies
+- Password hashing with bcrypt
+- Server-side request validation using Zod
+- Redis-backed rate limiting
+- Protected API routes and account-scoped resources
+- CORS configuration
+
+---
+
 ## Tech Stack
 
 **Frontend:** React, Vite, React Router, Tailwind CSS + DaisyUI, Axios, react-hot-toast, react-markdown, jsPDF
